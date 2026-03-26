@@ -31,6 +31,7 @@
 #define MAX_CYCLE_COUNT 2
 #define Servo_Adjust_Time 20
 #define Backwards_Total_Time 800 // guess
+#define Backwards_Total_Time_Dispense 500
 #define Forwards_Adjust_Time 500 
 
 typedef enum stage {
@@ -299,7 +300,8 @@ void loop() {
         // delay(Servo_Adjust_Time);
         runMotors((phase == MOVE_BACKWARDS_RETRIEVE ? BACK_DELTA : BACK_DELTA_DISPENSE)+BACK_OFFSET, (phase == MOVE_BACKWARDS_RETRIEVE ? BACK_DELTA : BACK_DELTA_DISPENSE));
         // if surpass total time
-      if (Delta_Time >= Backwards_Total_Time) {
+      if ((Delta_Time >= Backwards_Total_Time && phase == MOVE_BACKWARDS_RETRIEVE)
+       || (Delta_Time >= Backwards_Total_Time_Dispense && phase == MOVE_BACKWARDS_RETRIEVE)) {
         AllLEDs(LOW);
         runMotors(0,0);
         delay(Servo_Adjust_Time);
