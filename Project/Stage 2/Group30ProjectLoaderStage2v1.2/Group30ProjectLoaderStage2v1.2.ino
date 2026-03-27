@@ -45,8 +45,10 @@ const unsigned long TURN_180_TIME_MS    = 1830; //time needed to rotate about 18
 const unsigned long POST_TURN_DELAY_MS  = 100;  //short pause after turning
 const unsigned long PAUSE_TIME_MS       = 1000; //general pause between major actions
 const unsigned long SERVO_STEP_DELAY_MS = 20;   //delay between each small servo movement step
-const unsigned long BACKUP_TIME_MS      = 800;  //time spent backing up to collect or dump
-const unsigned long FORWARD_ADJUST_MS   = 500;  //time spent moving forward after recentering on the line
+const unsigned long BACKUP_TIME_RETRIEVE_MS = 680;  //time spent backing up to collect
+const unsigned long BACKUP_TIME_DUMP_MS = 800; // time spent backing up to dump
+
+const unsigned long FORWARD_ADJUST_MS   = 500;  //time spent moving forward after recentering on the line : 500
 
 const int MAX_CYCLES = 2;
 
@@ -54,7 +56,7 @@ const int MAX_CYCLES = 2;
 //servo angles
 
 const int LIFT_ANGLE_DOWN = 140;
-const int LIFT_ANGLE_UP   = 80;
+const int LIFT_ANGLE_UP   = 90; // 80
 
 const int CURL_ANGLE_IN   = 115;
 const int CURL_ANGLE_OUT  = 80;
@@ -235,7 +237,7 @@ void lowerBucketForCollection() {
   delay(PAUSE_TIME_MS);
 
   smoothMoveServo(liftServo, currentLiftAngle, LIFT_ANGLE_DOWN);
-  smoothMoveServo(curlServo, currentCurlAngle, CURL_ANGLE_OUT);
+  smoothMoveServo(curlServo, currentCurlAngle, 100); // CURL_ANGLE_OUT
 
   beginStage(BACK_UP_TO_COLLECT);
 }
@@ -245,8 +247,9 @@ void raiseBucketAfterCollection() {
   delay(PAUSE_TIME_MS);
   setAllLEDs(HIGH);
 
-  smoothMoveServo(curlServo, currentCurlAngle, CURL_ANGLE_IN);
+  // smoothMoveServo(curlServo, currentCurlAngle, CURL_ANGLE_IN);
   smoothMoveServo(liftServo, currentLiftAngle, LIFT_ANGLE_UP);
+  smoothMoveServo(curlServo, currentCurlAngle, CURL_ANGLE_IN);
 
   setAllLEDs(LOW);
   beginStage(MOVE_TO_DUMP);
@@ -276,7 +279,8 @@ void handleBackwardMotion(int speed, Stage nextStage) {
   setSingleLED(PIN_LED_GREEN);
   runDrive(speed + BACK_OFFSET, speed);
 
-  if (timeInStage() >= BACKUP_TIME_MS) {
+  if ((stage == BACK_UP_TO_COLLECT && timeInStage() >= BACKUP_TIME_RETRIEVE_MS) 
+  || (stage == BACK_UP_TO_DUMP && timeInStage() >= BACKUP_TIME_DUMP_MS)) {
     stopDrive();
     setAllLEDs(LOW);
     delay(SERVO_STEP_DELAY_MS);
