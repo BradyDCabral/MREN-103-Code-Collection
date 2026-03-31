@@ -1,11 +1,10 @@
 /********************************************************
-  M103Lab5RangeSensorCheck ((v2.0)
+  Group30ProjectLoaderStage1
 
-  Original by H. Fernando, 23/09/2021
-  
-  This code is to help calibrate the sharp sensor for your MiniMe Robot.
-  Place robot facing target, at a known distance. 
-  Program prints sensor output in A2D (counts) and millivolt values.
+  Created by Brady C. & Emily V.
+
+  Completes stage 1 of the loader project which primarily entails following a black
+  line trail
 *********************************************************/
 
 #define blcktp 2300 // 2000
