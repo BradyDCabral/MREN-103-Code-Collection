@@ -1,10 +1,10 @@
 /********************************************************
-  Group30ProjectLoaderStage1
+  Group30ProjectLoaderStage3
 
   Created by Brady C. & Emily V.
 
   Completes stage 1 of the loader project which primarily entails following a black
-  line trail
+  line trail and picks up and disposes 
 *********************************************************/
 
 #define blcktp 2300 // 2000
