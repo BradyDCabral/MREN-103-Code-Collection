@@ -41,11 +41,11 @@ const int BACK_OFFSET         = 2;    //small correction offset while moving bac
 const int WALL_DETECT_NORMAL  = 1250; //distance sensor threshold for detecting the wall during normal cycles
 const int WALL_DETECT_FINAL   = 900;  //distance sensor threshold for detecting the final stopping wall
 
-const unsigned long TURN_180_TIME_MS    = 1830; //time needed to rotate about 180 degrees
+const unsigned long TURN_180_TIME_MS    = 2100; //time needed to rotate about 180 degrees // HIGH : 1830 LOW : 
 const unsigned long POST_TURN_DELAY_MS  = 100;  //short pause after turning
 const unsigned long PAUSE_TIME_MS       = 1000; //general pause between major actions
 const unsigned long SERVO_STEP_DELAY_MS = 20;   //delay between each small servo movement step
-const unsigned long BACKUP_TIME_RETRIEVE_MS = 680;  //time spent backing up to collect
+const unsigned long BACKUP_TIME_RETRIEVE_MS = 1000;  //time spent backing up to collect HIGH : 700 LOW : 1000
 const unsigned long BACKUP_TIME_DUMP_MS = 800; // time spent backing up to dump
 
 const unsigned long FORWARD_ADJUST_MS   = 500;  //time spent moving forward after recentering on the line : 500
@@ -58,8 +58,8 @@ const int MAX_CYCLES = 2;
 const int LIFT_ANGLE_DOWN = 140;
 const int LIFT_ANGLE_UP   = 90; // 80
 
-const int CURL_ANGLE_IN   = 115;
-const int CURL_ANGLE_OUT  = 80;
+const int CURL_ANGLE_IN   = 105; // 110
+const int CURL_ANGLE_OUT  = 90;
 
 
 //robot states
@@ -237,7 +237,7 @@ void lowerBucketForCollection() {
   delay(PAUSE_TIME_MS);
 
   smoothMoveServo(liftServo, currentLiftAngle, LIFT_ANGLE_DOWN);
-  smoothMoveServo(curlServo, currentCurlAngle, 100); // CURL_ANGLE_OUT
+  smoothMoveServo(curlServo, currentCurlAngle, CURL_ANGLE_OUT); // CURL_ANGLE_OUT
 
   beginStage(BACK_UP_TO_COLLECT);
 }
@@ -247,9 +247,13 @@ void raiseBucketAfterCollection() {
   delay(PAUSE_TIME_MS);
   setAllLEDs(HIGH);
 
-  // smoothMoveServo(curlServo, currentCurlAngle, CURL_ANGLE_IN);
+  
+
+  smoothMoveServo(curlServo, currentCurlAngle, 105);
+  runDrive(FORWARD_SPEED, FORWARD_SPEED - FORWARD_OFFSET);
+  delay(200);
   smoothMoveServo(liftServo, currentLiftAngle, LIFT_ANGLE_UP);
-  smoothMoveServo(curlServo, currentCurlAngle, CURL_ANGLE_IN);
+  // smoothMoveServo(curlServo, currentCurlAngle, CURL_ANGLE_IN);
 
   setAllLEDs(LOW);
   beginStage(MOVE_TO_DUMP);
@@ -307,6 +311,9 @@ void setup() {
 
   liftServo.write(currentLiftAngle);
   curlServo.write(currentCurlAngle);
+
+  // liftServo.write(LIFT_ANGLE_DOWN);
+  // curlServo.write(105);
 
   Serial.begin(9600);
   stopDrive();
