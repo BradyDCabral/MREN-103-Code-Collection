@@ -41,7 +41,7 @@ const int BACK_OFFSET         = 2;    //small correction offset while moving bac
 const int WALL_DETECT_NORMAL  = 1250; //distance sensor threshold for detecting the wall during normal cycles
 const int WALL_DETECT_FINAL   = 900;  //distance sensor threshold for detecting the final stopping wall
 
-const unsigned long TURN_180_TIME_MS    = 2100; //time needed to rotate about 180 degrees // HIGH : 1830 LOW : 
+const unsigned long TURN_180_TIME_MS    = 2300; //time needed to rotate about 180 degrees // HIGH : 1830 LOW : 
 const unsigned long POST_TURN_DELAY_MS  = 100;  //short pause after turning
 const unsigned long PAUSE_TIME_MS       = 1000; //general pause between major actions
 const unsigned long SERVO_STEP_DELAY_MS = 20;   //delay between each small servo movement step
