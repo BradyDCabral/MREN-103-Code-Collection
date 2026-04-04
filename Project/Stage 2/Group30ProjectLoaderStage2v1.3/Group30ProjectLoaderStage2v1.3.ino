@@ -1,7 +1,7 @@
 #include <Servo.h>
 
 /********************************************************
-  Group30ProjectloaderStage2v1.1
+  Group30ProjectloaderStage2v1.3
 
   Original by B. Cabral & Emily Vargas-Penaranda 25/03/26
 
@@ -30,7 +30,7 @@ const int STOP_PULSE_BASE = 149;    //neutral motor pulse base (149 -> 1490 micr
 
 const int LINE_THRESHOLD      = 2300; //sensor value above this means the line is detected
 const int FORWARD_SPEED       = 8;    //base forward motor speed
-const int FORWARD_OFFSET      = 2;    //small correction offset to help the robot drive straighter
+const int FORWARD_OFFSET      = 0;    //small correction offset to help the robot drive straighter
 const int TURN_SPEED          = 10;   //motor speed used when turning in place
 const int RIGHT_TURN_OFFSET   = 5;    //extra adjustment to make right turns more accurate
 
@@ -38,15 +38,15 @@ const int BACK_SPEED_RETRIEVE = -20;  //backward speed used when collecting pell
 const int BACK_SPEED_DUMP     = -15;  //backward speed used when moving into dump position
 const int BACK_OFFSET         = 2;    //small correction offset while moving backward
 
-const int WALL_DETECT_NORMAL  = 1350; //distance sensor threshold for detecting the wall during normal cycles NRML : 1250
+const int WALL_DETECT_NORMAL  = 1250; //distance sensor threshold for detecting the wall during normal cycles NRML : 1250
 const int WALL_DETECT_FINAL   = 900;  //distance sensor threshold for detecting the final stopping wall
 
-const unsigned long TURN_180_TIME_MS    = 1800; //time needed to rotate about 180 degrees // HIGH : 1830 LOW : 2100 1950
+const unsigned long TURN_180_TIME_MS    = 1850; //time needed to rotate about 180 degrees // HIGH : 1830 LOW : 2100 1950
 const unsigned long POST_TURN_DELAY_MS  = 100;  //short pause after turning
 const unsigned long PAUSE_TIME_MS       = 1000; //general pause between major actions
 const unsigned long SERVO_STEP_DELAY_MS = 20;   //delay between each small servo movement step
-const unsigned long BACKUP_TIME_RETRIEVE_MS = 1500;  //time spent backing up to collect HIGH : 700 LOW : 1000
-const unsigned long BACKUP_TIME_DUMP_MS = 1000; // time spent backing up to dump
+const unsigned long BACKUP_TIME_RETRIEVE_MS = 1300;  //time spent backing up to collect HIGH : 700 LOW : 1000
+const unsigned long BACKUP_TIME_DUMP_MS = 1700; // time spent backing up to dump 1500
 
 const unsigned long FORWARD_ADJUST_MS   = 800;  //time spent moving forward after recentering on the line : 500
 
@@ -55,12 +55,15 @@ const int MAX_CYCLES = 2;
 
 //servo angles
 
-const int LIFT_ANGLE_DOWN = 140;
-const int LIFT_ANGLE_UP   = 70; // 80
+const int LIFT_ANGLE_DOWN = 100; // 135
+const int LIFT_ANGLE_UP   = 38; // 60
 
-const int CURL_ANGLE_IN   = 105; // 110
-const int CURL_ANGLE_OUT  = 87; // 90
+const int CURL_ANGLE_OVERCURL = 65; // might need to adjust
+const int CURL_ANGLE_IN   = 58; // 110
+const int CURL_ANGLE_OUT  = 50; // 90
+const int CURL_ANGLE_DUMP = 38;
 
+// dump value 38
 
 //robot states
 enum Stage {
@@ -102,6 +105,7 @@ int sharpMilliVolts = 0;
 
 int currentLiftAngle = LIFT_ANGLE_UP;
 int currentCurlAngle = CURL_ANGLE_IN;
+
 
 unsigned long stageStartTime = 0;
 bool started = false;
@@ -260,13 +264,16 @@ void raiseBucketAfterCollection() {
 
   
 
-  smoothMoveServo(curlServo, currentCurlAngle, 105);
+  smoothMoveServo(curlServo, currentCurlAngle, CURL_ANGLE_OVERCURL);
+  delay(1000);
   runDrive(FORWARD_SPEED, FORWARD_SPEED - FORWARD_OFFSET);
   delay(500);
   stopDrive();
   delay(50);
+  smoothMoveServo(curlServo, currentCurlAngle, CURL_ANGLE_IN);
+  delay(1000);
   smoothMoveServo(liftServo, currentLiftAngle, LIFT_ANGLE_UP);
-  // smoothMoveServo(curlServo, currentCurlAngle, CURL_ANGLE_IN);
+  
   delay(1000);
   sharpMilliVolts = 0;
   setAllLEDs(LOW);
@@ -276,7 +283,7 @@ void raiseBucketAfterCollection() {
 //opens the bucket to dump the pellets
 void dumpBucket() {
   delay(PAUSE_TIME_MS);
-  smoothMoveServo(curlServo, currentCurlAngle, CURL_ANGLE_OUT);
+  smoothMoveServo(curlServo, currentCurlAngle, CURL_ANGLE_DUMP);
 
   beginStage(RESET_BUCKET);
 }
@@ -325,9 +332,9 @@ void setup() {
 
   liftServo.write(currentLiftAngle);
   curlServo.write(currentCurlAngle);
-
-  // liftServo.write(LIFT_ANGLE_DOWN);
-  // curlServo.write(105);
+  // 112 65
+  // liftServo.write(LIFT_ANGLE_DOWN); 
+  // curlServo.write(CURL_ANGLE_OUT);
   // detachBucketServos();
   Serial.begin(9600);
   stopDrive();
