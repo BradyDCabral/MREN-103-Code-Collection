@@ -29,7 +29,7 @@ const int PIN_SERVO_CURL = 12;
 const int STOP_PULSE_BASE = 149;    //neutral motor pulse base (149 -> 1490 microseconds = stop)
 
 const int LINE_THRESHOLD      = 2000; //sensor value above this means the line is detected STNDRD 2300
-const int LINE_THRESHOLD_R    = 1500; // sensor value above this means the line is detected for right sensor STNDRD 1500
+const int LINE_THRESHOLD_R    = 2000; // sensor value above this means the line is detected for right sensor STNDRD 1500
 const int FORWARD_SPEED       = 8;    //base forward motor speed
 const int FORWARD_OFFSET      = 0;    //small correction offset to help the robot drive straighter
 const int TURN_SPEED          = 10;   //motor speed used when turning in place
@@ -37,17 +37,17 @@ const int RIGHT_TURN_OFFSET   = 5;    //extra adjustment to make right turns mor
 
 const int BACK_SPEED_RETRIEVE = -20;  //backward speed used when collecting pellets
 const int BACK_SPEED_DUMP     = -15;  //backward speed used when moving into dump position
-const int BACK_OFFSET         = 2;    //small correction offset while moving backward
+const int BACK_OFFSET         = 1;    //small correction offset while moving backward
 
 const int WALL_DETECT_NORMAL  = 1250; //distance sensor threshold for detecting the wall during normal cycles NRML : 1250
 const int WALL_DETECT_FINAL   = 1250;  //distance sensor threshold for detecting the final stopping wall
 
-const unsigned long TURN_180_TIME_MS    = 1900; //time needed to rotate about 180 degrees // HIGH : 1830 LOW : 2100 1950
+const unsigned long TURN_180_TIME_MS    = 1750; //time needed to rotate about 180 degrees // HIGH : 1830 LOW : 2100 1950
 const unsigned long POST_TURN_DELAY_MS  = 100;  //short pause after turning
 const unsigned long PAUSE_TIME_MS       = 1000; //general pause between major actions
 const unsigned long SERVO_STEP_DELAY_MS = 20;   //delay between each small servo movement step
 const unsigned long BACKUP_TIME_RETRIEVE_MS = 1300;  //time spent backing up to collect HIGH : 700 LOW : 1000
-const unsigned long BACKUP_TIME_DUMP_MS = 1700; // time spent backing up to dump 1500
+const unsigned long BACKUP_TIME_DUMP_MS = 1000; // time spent backing up to dump 1500
 
 const unsigned long FORWARD_ADJUST_MS   = 800;  //time spent moving forward after recentering on the line : 500
 
@@ -56,11 +56,11 @@ const int MAX_CYCLES = 2;
 
 //servo angles
 
-const int LIFT_ANGLE_DOWN = 100; // 135
-const int LIFT_ANGLE_UP   = 38; // 60
+const int LIFT_ANGLE_DOWN = 140; // 135
+const int LIFT_ANGLE_UP   = 90; // 60
 
 const int CURL_ANGLE_OVERCURL = 65; // might need to adjust
-const int CURL_ANGLE_IN   = 60; // 58
+const int CURL_ANGLE_IN   = 62; // 58
 const int CURL_ANGLE_OUT  = 52; // 90
 const int CURL_ANGLE_DUMP = 38;
 
@@ -334,7 +334,7 @@ void setup() {
   liftServo.write(currentLiftAngle);
   curlServo.write(currentCurlAngle);
   // 112 65
-  // liftServo.write(LIFT_ANGLE_DOWN); 
+  // liftServo.write(120); 
   // curlServo.write(53);
   // detachBucketServos();
   Serial.begin(9600);
